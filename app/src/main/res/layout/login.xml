@@ -91,6 +91,7 @@
         android:layout_marginTop="109dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="137dp"
+        android:textColor="#FFFFFF"
         android:background="@drawable/btn"
         android:hapticFeedbackEnabled="true"
         android:text="Entrar"
