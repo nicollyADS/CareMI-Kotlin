@@ -1,4 +1,7 @@
 package com.example.caremi_kotlin.model
 
-class Login {
-}
+data class Login(
+    var id: Long? = null,
+    var cpf: String = "",
+    var senha: String = ""
+)
