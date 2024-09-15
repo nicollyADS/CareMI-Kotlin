@@ -26,14 +26,18 @@ class AtendimentoActivity : Activity() {
     private fun atualizarListaAtendimentos(listView: ListView) {
         atendimentoRepository.buscarAtendimentos { atendimentos, erro ->
             if (erro != null) {
-                Toast.makeText(this, "Erro ao buscar atendimentos: $erro", Toast.LENGTH_SHORT).show()
+                runOnUiThread {
+                    Toast.makeText(this, "Erro ao buscar atendimentos: $erro", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 val listaAtendimentosStr = atendimentos?.map {
                     "Nome: ${it.descricao}\nDias: ${it.dias}\nHábito: ${it.habito}\nSono: ${it.tempoSono}\nHereditário: ${it.hereditario}\nData: ${it.dataEnvio}"
                 } ?: emptyList()
 
-                val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listaAtendimentosStr)
-                listView.adapter = adapter
+                runOnUiThread {
+                    val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listaAtendimentosStr)
+                    listView.adapter = adapter
+                }
             }
         }
     }
