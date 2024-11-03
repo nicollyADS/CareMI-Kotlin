@@ -8,6 +8,7 @@
 
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -31,6 +32,7 @@
         <activity android:name=".activity.ExameActivity"/>
         <activity android:name=".activity.AtendimentoActivity"/>
         <activity android:name=".activity.AgendamentoActivity"/>
+
 
 
     </application>

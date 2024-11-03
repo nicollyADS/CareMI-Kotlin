@@ -69,4 +69,32 @@ class AtendimentoRepository {
             }
         })
     }
+
+    fun editarAtendimento(atendimento: Atendimento, callback: (Boolean, String?) -> Unit) {
+        val atendimentoJson = gson.toJson(atendimento)
+        val requestBody = atendimentoJson.toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url("$BASE_URL/${atendimento.id}") // Assumindo que o ID do atendimento seja usado na URL para edição
+            .put(requestBody)
+            .build()
+
+        cliente.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("ATENDIMENTO_REPOSITORY", "Erro ao editar atendimento: ${e.message}")
+                callback(false, e.message)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val respostaBody = response.body?.string()
+                if (response.isSuccessful) {
+                    Log.i("ATENDIMENTO_REPOSITORY", "Atendimento editado com sucesso. Resposta: $respostaBody")
+                    callback(true, null)
+                } else {
+                    Log.e("ATENDIMENTO_REPOSITORY", "Erro ao editar atendimento: ${response.message}")
+                    callback(false, respostaBody ?: "Erro desconhecido")
+                }
+            }
+        })
+    }
 }

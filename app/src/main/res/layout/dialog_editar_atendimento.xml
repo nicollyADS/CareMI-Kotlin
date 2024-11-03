@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editDescricao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descrição" />
+
+    <EditText
+        android:id="@+id/editDias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Dias" />
+
+    <EditText
+        android:id="@+id/editHabito"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Hábito" />
+
+    <EditText
+        android:id="@+id/editSono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tempo de Sono" />
+
+    <EditText
+        android:id="@+id/editHereditario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Hereditário" />
+
+    <EditText
+        android:id="@+id/editDataEnvio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Data de Envio" />
+
+</LinearLayout>
