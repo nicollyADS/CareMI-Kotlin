@@ -1,5 +1,6 @@
 package com.example.caremi_kotlin.activity
 
+import AtendimentoRepository
 import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
@@ -9,29 +10,33 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.caremi_kotlin.R
 import com.example.caremi_kotlin.model.Atendimento
-import com.example.caremi_kotlin.repository.AtendimentoRepository
 
 class AtendimentoActivity : Activity() {
 
     private lateinit var atendimentoRepository: AtendimentoRepository
-    private lateinit var atendimentos: List<Atendimento> // Campo para armazenar a lista de atendimentos
-    private lateinit var listViewAtendimento: ListView // Declara como lateinit
+    private lateinit var atendimentos: List<Atendimento>
+    private lateinit var listViewAtendimento: ListView
 
     override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
         setContentView(R.layout.atendimento)
 
-        listViewAtendimento = findViewById(R.id.listViewAtendimento) // Inicializa a variável lateinit
+        listViewAtendimento = findViewById(R.id.listViewAtendimento)
 
         atendimentoRepository = AtendimentoRepository()
 
         atualizarListaAtendimentos(listViewAtendimento)
 
-        // Listener para clique longo
+
         listViewAtendimento.setOnItemLongClickListener { _, _, position, _ ->
-            val atendimentoSelecionado = atendimentos[position] // Acesse o atendimento selecionado
-            abrirTelaDeEdicao(atendimentoSelecionado) // Abra a tela de edição
+            val atendimentoSelecionado = atendimentos[position]
+            abrirTelaDeEdicao(atendimentoSelecionado)
             true
+        }
+
+        listViewAtendimento.setOnItemClickListener { _, _, position, _ ->
+            val atendimentoSelecionado = atendimentos[position]
+            confirmarExclusao(atendimentoSelecionado)
         }
     }
 
@@ -42,9 +47,9 @@ class AtendimentoActivity : Activity() {
                     Toast.makeText(this, "Erro ao buscar atendimentos: $erro", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                this.atendimentos = atendimentos ?: emptyList() // Armazena a lista de atendimentos
+                this.atendimentos = atendimentos ?: emptyList()
 
-                val listaAtendimentosStr = this.atendimentos.map { // Aqui usamos `this.atendimentos` que não é nulo
+                val listaAtendimentosStr = this.atendimentos.map {
                     "Nome: ${it.descricao}\nDias: ${it.dias}\nHábito: ${it.habito}\nSono: ${it.tempoSono}\nHereditário: ${it.hereditario}\nData: ${it.dataEnvio}"
                 }
 
@@ -84,7 +89,6 @@ class AtendimentoActivity : Activity() {
                 atendimento.hereditario = editHereditario.text.toString()
                 atendimento.dataEnvio = editDataEnvio.text.toString()
 
-                // Chama o método de edição
                 atendimentoRepository.editarAtendimento(atendimento) { sucesso, erro ->
                     if (sucesso) {
                         atualizarListaAtendimentos(listViewAtendimento)
@@ -95,6 +99,28 @@ class AtendimentoActivity : Activity() {
                 }
             }
             .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun confirmarExclusao(atendimento: Atendimento) {
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar Exclusão")
+            .setMessage("Você realmente deseja excluir este atendimento?")
+            .setPositiveButton("Sim") { _, _ ->
+                atendimento.id?.let { id ->
+                    atendimentoRepository.excluirAtendimento(id) { sucesso, erro ->
+                        if (sucesso) {
+                            atualizarListaAtendimentos(listViewAtendimento)
+                            Toast.makeText(this, "Atendimento excluído com sucesso", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this, "Erro ao excluir atendimento: $erro", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } ?: run {
+                    Toast.makeText(this, "ID do atendimento não encontrado", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Não", null)
             .show()
     }
 }

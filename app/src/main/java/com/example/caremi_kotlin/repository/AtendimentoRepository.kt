@@ -1,5 +1,3 @@
-package com.example.caremi_kotlin.repository
-
 import android.util.Log
 import com.example.caremi_kotlin.model.Atendimento
 import com.google.gson.Gson
@@ -75,7 +73,7 @@ class AtendimentoRepository {
         val requestBody = atendimentoJson.toRequestBody("application/json".toMediaType())
 
         val request = Request.Builder()
-            .url("$BASE_URL/${atendimento.id}") // Assumindo que o ID do atendimento seja usado na URL para edição
+            .url("$BASE_URL/${atendimento.id}")
             .put(requestBody)
             .build()
 
@@ -93,6 +91,30 @@ class AtendimentoRepository {
                 } else {
                     Log.e("ATENDIMENTO_REPOSITORY", "Erro ao editar atendimento: ${response.message}")
                     callback(false, respostaBody ?: "Erro desconhecido")
+                }
+            }
+        })
+    }
+
+    fun excluirAtendimento(id: Long, callback: (Boolean, String?) -> Unit) {
+        val request = Request.Builder()
+            .url("$BASE_URL/$id")
+            .delete()
+            .build()
+
+        cliente.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("ATENDIMENTO_REPOSITORY", "Erro ao excluir atendimento: ${e.message}")
+                callback(false, e.message)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    Log.i("ATENDIMENTO_REPOSITORY", "Atendimento excluído com sucesso.")
+                    callback(true, null)
+                } else {
+                    Log.e("ATENDIMENTO_REPOSITORY", "Erro ao excluir atendimento: ${response.message}")
+                    callback(false, response.body?.string() ?: "Erro desconhecido")
                 }
             }
         })
