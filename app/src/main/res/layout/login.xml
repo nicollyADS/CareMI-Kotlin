@@ -13,6 +13,7 @@
         android:layout_marginTop="13dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="23dp"
+        android:padding="13dp"
         android:background="@drawable/radius"
         android:ems="10"
         android:inputType="number"

@@ -1,7 +1,9 @@
 package com.example.caremi_kotlin.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -13,16 +15,20 @@ import com.example.caremi_kotlin.model.Login
 class LoginActivity : Activity() {
 
     private lateinit var loginRepository: LoginRepository
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
         setContentView(R.layout.login)
 
         loginRepository = LoginRepository()
+        sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
 
         val edtLogin = findViewById<EditText>(R.id.edtLogin)
         val edtSenha = findViewById<EditText>(R.id.edtSenha)
         val btnEntrar = findViewById<Button>(R.id.btnEntrar)
+
+        edtLogin.setText(sharedPreferences.getString("cpf", ""))
 
         btnEntrar.setOnClickListener {
             val cpf = edtLogin.text.toString().trim()
@@ -34,6 +40,7 @@ class LoginActivity : Activity() {
                     runOnUiThread {
                         if (sucesso) {
                             Toast.makeText(this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
+                            salvarCpfNoSharedPreferences(cpf)
                             startActivity(Intent(this, HomeActivity::class.java))
                         } else {
                             Toast.makeText(this, "Falha no login: $erro", Toast.LENGTH_SHORT).show()
@@ -44,5 +51,11 @@ class LoginActivity : Activity() {
                 Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun salvarCpfNoSharedPreferences(cpf: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString("cpf", cpf)
+        editor.apply()
     }
 }
